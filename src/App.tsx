@@ -3,11 +3,14 @@ import type { Pokemon, PokemonResponse } from './types';
 import { Grid, Box, Typography } from '@mui/material';
 import PokemonCard from './components/PokemonCard';
 import ComparisonSection from './components/ComparisonSection';
+import SquadSection from './components/SquadSection';
+import { useSquad } from './hooks/useSquad';
 import './App.css';
 
 function App() {
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
   const [selectedPokemon, setSelectedPokemon] = useState<Pokemon[]>([]);
+  const { squad, addToSquad, removeFromSquad } = useSquad();
 
   useEffect(() => {
     const fetchPokemon = async () => {
@@ -47,6 +50,7 @@ function App() {
       <Typography variant="h4" gutterBottom>
         Pokeverse | All Pokémon
       </Typography>
+      <SquadSection squad={squad} onRemoveFromSquad={removeFromSquad} />
       <ComparisonSection selectedPokemon={selectedPokemon} />
       <Grid container spacing={2}>
         {pokemonList.map((pokemon, index) => (
@@ -63,6 +67,9 @@ function App() {
               pokemon={pokemon}
               isSelected={selectedPokemon.includes(pokemon)}
               onSelect={handleSelectPokemon}
+              isInSquad={squad.includes(pokemon)}
+              onAddToSquad={addToSquad}
+              onRemoveFromSquad={removeFromSquad}
             />
           </Grid>
         ))}

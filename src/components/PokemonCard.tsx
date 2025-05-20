@@ -1,15 +1,25 @@
 import React from 'react';
 import type { Pokemon } from '../types';
-import { Card, CardContent, Typography, Button } from '@mui/material';
+import { Card, CardContent, Typography, Button, Box } from '@mui/material';
 import { getTypeColor } from '../utils/typeColors';
 
 interface PokemonCardProps {
    pokemon: Pokemon;
    isSelected: boolean;
    onSelect: (pokemon: Pokemon) => void;
+   isInSquad: boolean;
+   onAddToSquad: (pokemon: Pokemon) => void;
+   onRemoveFromSquad: (pokemon: Pokemon) => void;
 }
 
-const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, isSelected, onSelect }) => {
+const PokemonCard: React.FC<PokemonCardProps> = ({ 
+   pokemon, 
+   isSelected, 
+   onSelect,
+   isInSquad,
+   onAddToSquad,
+   onRemoveFromSquad,
+}) => {
    const primaryType = pokemon.details?.types[0]?.type.name || 'normal';
    const secondaryType = pokemon.details?.types[1]?.type.name;
    const typeDisplay = secondaryType ? `${primaryType}/${secondaryType}` : primaryType;
@@ -62,13 +72,25 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, isSelected, onSelect
                   </Typography>
                </>
             )}
-            <Button
-               variant={isSelected ? 'outlined' : 'contained'}
-               onClick={() => onSelect(pokemon)}
-               sx={{ marginTop: 1 }}
-            >
-               {isSelected ? 'Deselect' : 'Select'}
-            </Button>
+            <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', marginTop: 1 }}>
+               <Button
+                  variant={isSelected ? 'outlined' : 'contained'}
+                  onClick={() => onSelect(pokemon)}
+                  size="small"
+                  sx={{ minWidth: '120px' }}
+               >
+                  {isSelected ? 'Deselect' : 'Select'}
+               </Button>
+               <Button
+                  variant={isInSquad ? 'outlined' : 'contained'}
+                  color={isInSquad ? 'error' : 'primary'}
+                  onClick={() => (isInSquad ? onRemoveFromSquad(pokemon) : onAddToSquad(pokemon))}
+                  size="small"
+                  sx={{ minWidth: '120px' }}
+               >
+                  {isInSquad ? 'Remove from Squad' : 'Add to Squad'}
+               </Button>
+            </Box>
          </CardContent>
       </Card>
    );
